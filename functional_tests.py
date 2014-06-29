@@ -1,4 +1,5 @@
 from selenium import webdriver
+from django import TestCase
 browser = webdriver.Firefox()
 # Jane Doe is a new patient at the Midvale Clinic. 
 # As a first step she needs to fill out her family history/ demographic information at the front desk
@@ -7,7 +8,7 @@ browser = webdriver.Firefox()
 browser.get('http://localhost:8000')
 # She is also given an intial usr name and pwd to enter into her account, which she MUST change after logging in for the first time.
 # Jane sees the login page prompting her to enter her clinic-made usr name and pwd.
-assert 'log in' in browser.title
+
 # After Jane enters it, she is taken to a 'customize account' page, where she can set-up her own username and pwd that will be 
 # easy for her to remember. 
 # She hits enter.
