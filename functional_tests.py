@@ -12,19 +12,20 @@ class newUserLogin(unittest.TestCase):
 		self.assertIn('log in', self.browser.title)
 		#
 		header_text = self.browser.find_element_by_tag_name('h1').text
-		self.assertIn('log in', header_text)
+		self.assertIn('Your name and password', header_text)
 		#
 		usrnme_inputbox = self.browser.find_elemnet_by_id('id_login_name')
-		self.assertEqual(usrnme_inputbox.get_attribute('name_placeholder), 'Enter login name')
+		self.assertEqual(usrnme_inputbox.get_attribute('placeholder'),'Enter Name')
+
 		usrnme_inputbox.send_keys('Jane Doe')
 		usrnme_inputbox.send_keys(keys.ENTER)
 		#
 		pwd_inputbox = self.browser.find_elemnet_by_id('id_login_pwd')
-		self.assertEqual(pwd_inputbox.get_attribute('pwd_placeholder), 'Enter login name')
+		self.assertEqual(pwd_inputbox.get_attribute('pwd_placeholder'), 'Enter password')
 		pwd_inputbox.send_keys('whatever')
 		pwd_inputbox.send_keys(keys.ENTER)
 		#
-		submit_button = self.browser.find_element_by_id('id_submit_btn')
+		submit_button = self.browser.find_element_by_id('id_submit_button')
 		#
 		wait = WebDriverWait( browser, 5 )
 		#
