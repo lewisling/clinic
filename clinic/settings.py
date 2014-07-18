@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+ADMINS = (
+    # ('CrazyGal', 'CrazyGal@example.com'),
+)
+MANAGERS = ADMINS
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -26,6 +31,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+
 
 # Application definition
 
@@ -33,7 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'user_sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
@@ -41,19 +48,28 @@ INSTALLED_APPS = (
     'notetaker',
     'registration',
     'ckeditor',
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
 
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'user_sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'two_factor.middleware.threadlocals.ThreadLocals',
 )
 
+
 ROOT_URLCONF = 'clinic.urls'
+
 
 WSGI_APPLICATION = 'clinic.wsgi.application'
 
@@ -109,4 +125,41 @@ EMAIL_HOST_PASSWORD=''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'testing@example.com'
 SITE_ID = 1
+
+from django.core.urlresolvers import reverse_lazy
+LOGOUT_URL = reverse_lazy('logout')
+LOGIN_URL = reverse_lazy('two_factor:login')
+LOGIN_REDIRECT_URL = reverse_lazy('two_factor:profile')
+
+INTERNAL_IPS = ('127.0.0.1',)
+  
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'two_factor': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    }
+}
+  
+TWO_FACTOR_CALL_GATEWAY = 'clinic.gateways.Messages'
+TWO_FACTOR_SMS_GATEWAY = 'clinic.gateways.Messages'
+  
+SESSION_ENGINE = 'user_sessions.backends.db'
+  
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+  
+try:
+    from .settings_private import *  # noqa
+except ImportError as e:
+    pass
+
     
