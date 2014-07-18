@@ -26,9 +26,6 @@ def newnote_page(request):
         save_it.save()
     return render_to_response('newnote.html', locals(), context_instance = RequestContext(request))
 
-class SecureView(OTPRequiredMixin, TemplateView):
-    template_name = 'secure.html'
-
 class RegistrationView(FormView):
     template_name = 'registration.html'
     form_class = UserCreationForm
@@ -46,10 +43,7 @@ class RegistrationCompleteView(TemplateView):
         context['login_url'] = str(settings.LOGIN_URL)
         return context
   
-  
-@class_view_decorator(never_cache)
-class ExampleSecretView(OTPRequiredMixin, TemplateView):
-    template_name = 'secret.html'
+
 
 
     
